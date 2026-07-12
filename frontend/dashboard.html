@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+
+    <div class="container">
+
+        <h1>Dashboard</h1>
+
+        <h3>Create Task</h3>
+
+        <form id="taskForm">
+
+            <input
+                type="text"
+                id="title"
+                placeholder="Task Title"
+                required
+            >
+
+            <textarea
+                id="description"
+                placeholder="Description"
+            ></textarea>
+
+            <button type="submit">
+                Add Task
+            </button>
+
+        </form>
+
+        <hr>
+
+        <h3>Your Tasks</h3>
+
+        <div id="taskList">
+
+        </div>
+
+    </div>
+
+    <script src="./js/dashboard.js"></script>
+
+</body>
+</html>
