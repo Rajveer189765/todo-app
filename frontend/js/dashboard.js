@@ -106,13 +106,34 @@
 // fetchTasks();
 
 
-
+let editingTaskId = null;
 // Get token from localStorage
 const token = localStorage.getItem("token");
 
 // If user is not logged in, redirect to login page
 if (!token) {
     window.location.href = "index.html";
+}
+
+function logout() {
+
+    localStorage.removeItem("token");
+
+    window.location.href = "index.html";
+
+}
+
+const logoutBtn = document.getElementById("logoutBtn");
+
+logoutBtn.addEventListener("click", logout);
+
+function editTask(id, title, description) {
+
+    editingTaskId = id;
+
+    document.getElementById("title").value = title;
+    document.getElementById("description").value = description;
+
 }
 
 // =======================
@@ -143,6 +164,15 @@ async function fetchTasks() {
         taskDiv.innerHTML = `
             <h4>${task.title}</h4>
             <p>${task.description}</p>
+
+            <button onclick="editTask('${task._id}', '${task.title}', '${task.description}')">
+                Edit
+            </button>
+
+            <button onclick="deleteTask('${task._id}')">
+                Delete
+            </button>
+
             <hr>
         `;
 
@@ -167,9 +197,31 @@ async function createTask(event) {
     const title = document.getElementById("title").value;
     const description = document.getElementById("description").value;
 
-    const response = await fetch("http://localhost:5000/api/tasks", {
+    // const response = await fetch("http://localhost:5000/api/tasks", {
 
-        method: "POST",
+    //     method: "POST",
+
+    //     headers: {
+    //         "Content-Type": "application/json",
+    //         Authorization: `Bearer ${token}`
+    //     },
+
+    //     body: JSON.stringify({
+    //         title,
+    //         description
+    //     })
+
+    // });
+
+    const url = editingTaskId
+        ? `http://localhost:5000/api/tasks/${editingTaskId}`
+        : "http://localhost:5000/api/tasks";
+
+    const method = editingTaskId ? "PUT" : "POST";
+
+    const response = await fetch(url, {
+
+        method,
 
         headers: {
             "Content-Type": "application/json",
@@ -192,13 +244,36 @@ async function createTask(event) {
         // Clear form
         document.getElementById("title").value = "";
         document.getElementById("description").value = "";
-
+        
+        editingTaskId = null; // Reset editing state
         // Refresh task list
-        fetchTasks();
+        await fetchTasks();
 
     }
 
 }
 
+async function deleteTask(id) {
+
+    const response = await fetch(`http://localhost:5000/api/tasks/${id}`, {
+
+        method: "DELETE",
+
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+
+    });
+
+    const data = await response.json();
+
+    console.log(data);
+
+    if (data.success) {
+        await fetchTasks();
+    }
+
+}
+
 // Load tasks when dashboard opens
-fetchTasks();
+await fetchTasks();
