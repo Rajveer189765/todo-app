@@ -6,6 +6,7 @@ const connectDB = require("./config/db");
 const taskRoutes = require("./routes/taskRoutes");
 
 dotenv.config();
+console.log(process.env.JWT_SECRET);
 connectDB();
 
 // app.use("/api/tasks", taskRoutes);
