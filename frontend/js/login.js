@@ -32,6 +32,6 @@ async function loginUser(event) {
         console.log(localStorage.getItem("token"));
 
         console.log("Token Saved!");
-
+        window.location.href = "dashboard.html";
     }
 }

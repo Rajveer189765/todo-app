@@ -117,6 +117,12 @@ if (!token) {
 
 function logout() {
 
+    const confirmLogout = confirm("Are you sure you want to logout?");
+
+    if (!confirmLogout) {
+        return;
+    }
+
     localStorage.removeItem("token");
 
     window.location.href = "index.html";
@@ -125,7 +131,9 @@ function logout() {
 
 const logoutBtn = document.getElementById("logoutBtn");
 
-logoutBtn.addEventListener("click", logout);
+if (logoutBtn) {
+    logoutBtn.addEventListener("click", logout);
+}
 
 function editTask(id, title, description) {
 
@@ -157,20 +165,22 @@ async function fetchTasks() {
     // Clear old tasks before rendering again
     taskList.innerHTML = "";
 
-    data.tasks.forEach(task => {
+    data.tasks.forEach((task, index) => {
 
         const taskDiv = document.createElement("div");
-
+        taskDiv.className = "task-card";
         taskDiv.innerHTML = `
-            <h4>${task.title}</h4>
+            <h4>${index + 1}. ${task.title}</h4>
             <p>${task.description}</p>
 
-            <button onclick="editTask('${task._id}', '${task.title}', '${task.description}')">
-                Edit
-            </button>
+            <button class="edit-btn"
+                onclick="editTask('${task._id}','${task.title}','${task.description}')">
+                    Edit
+                </button>
 
-            <button onclick="deleteTask('${task._id}')">
-                Delete
+                <button class="delete-btn"
+                onclick="deleteTask('${task._id}')">
+                    Delete
             </button>
 
             <hr>
@@ -244,7 +254,7 @@ async function createTask(event) {
         // Clear form
         document.getElementById("title").value = "";
         document.getElementById("description").value = "";
-        
+
         editingTaskId = null; // Reset editing state
         // Refresh task list
         await fetchTasks();
@@ -255,25 +265,28 @@ async function createTask(event) {
 
 async function deleteTask(id) {
 
-    const response = await fetch(`http://localhost:5000/api/tasks/${id}`, {
+    const confirmDelete = confirm("Are you sure you want to delete this task?");
 
-        method: "DELETE",
+    if (!confirmDelete) {
+        return;
+    }
 
-        headers: {
-            Authorization: `Bearer ${token}`
+    const response = await fetch(
+        `http://localhost:5000/api/tasks/${id}`,
+        {
+            method: "DELETE",
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
         }
-
-    });
+    );
 
     const data = await response.json();
 
-    console.log(data);
-
     if (data.success) {
-        await fetchTasks();
+        fetchTasks();
     }
-
 }
 
 // Load tasks when dashboard opens
-await fetchTasks();
+fetchTasks();
