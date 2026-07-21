@@ -150,16 +150,6 @@ using Live Server.
 
 ---
 
-## 📸 Screenshots
-
-Add screenshots of:
-
-- Login Page
-- Register Page
-- Dashboard
-- CRUD Operations
-
----
 
 ## 🔮 Future Improvements
 
